@@ -59,6 +59,10 @@ class Sewer(models.Model):
         required=True
     )
 
+    diameter = fields.Float(
+        string='Diameter',
+    )
+
     ladder = fields.Selection(
         string='Ladder',
         selection=[
