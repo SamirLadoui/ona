@@ -20,6 +20,7 @@
         'data/ir_sequence_sewer.xml',
         'views/sewer.xml',
         'views/quick_diagnosis.xml',
+        'views/trunk.xml',
         'views/menu.xml',
     ],
 }

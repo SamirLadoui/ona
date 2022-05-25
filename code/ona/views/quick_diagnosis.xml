@@ -35,7 +35,22 @@
                             <field name="name"/>
                             <field name="sewer_id"/>
                         </group>
+                        <group>
+                            <field name="date"/>
+                        </group>
                     </group>
+                    <field name="trunk_ids">
+                        <tree>
+                            <field name="sewer_id"/>
+                            <field name="length"/>
+                            <field name="diameter"/>
+                            <field name="depth"/>
+                            <field name="flow"/>
+                            <field name="fill_rate"/>
+                            <field name="hydrocarbons_presence"/>
+                            <field name="deformation" optional="hide"/>
+                        </tree>
+                    </field>
                 </sheet>
             </form>
         </field>

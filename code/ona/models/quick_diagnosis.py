@@ -6,16 +6,26 @@ class QuickDiagnosis(models.Model):
     _description = 'Quick Diagnosis'
 
     name = fields.Char(
-        string='Name'
+        string='Name',
+        required=True
     )
 
     sewer_id = fields.Many2one(
         comodel_name='ona.sewer',
+        required=True,
         string='Sewer'
     )
 
+    date = fields.Datetime(
+        string='Date',
+        default=fields.Datetime.now,
+        readonly=True
+    )
+    
+
     vehicle_accessibility = fields.Selection(
         string='Vehicle Accessibility',
+        required=True,
         selection=[
             ('nac', 'NAC'),
             ('vl', 'VL'),
@@ -25,6 +35,7 @@ class QuickDiagnosis(models.Model):
 
     traffic_density = fields.Selection(
         string='Traffic Density',
+        required=True,
         selection=[
             ('null', 'Null'),
             ('rare', 'Rare'),
@@ -34,11 +45,12 @@ class QuickDiagnosis(models.Model):
     )
 
     h2s_risk = fields.Boolean(
-        string='H2S Risk'
+        string='H2S Risk',
     )
 
     road_condition = fields.Selection(
         string='Road Condition',
+        required=True,
         selection=[
             ('bitumen', 'Bitumen'),
             ('ground', 'Ground'),
@@ -47,6 +59,7 @@ class QuickDiagnosis(models.Model):
 
     ground_nature = fields.Selection(
         string='Ground Nature',
+        required=True,
         selection=[
             ('flat', 'Flat'),
             ('slope', 'Slope'),
@@ -54,111 +67,13 @@ class QuickDiagnosis(models.Model):
         ]
     )
 
-    length = fields.Float(
-        string='Length'
-    )
-
-    depth = fields.Float(
-        string='Depth'
-    )
-
-    material = fields.Boolean(
-        string='Material'
-    )
-
-    flow =  fields.Selection(
-        string='Flow',
-        selection=[
-            ('dry', 'Dry'),
-            ('low', 'Low'),
-            ('medium', 'Medium'),
-            ('strong', 'Strong'),
-        ]
-    )
-
-    hydrocarbons_presence = fields.Boolean(
-        string='Hydrocarbons Presence'
-    )
-
-    fill_rate = fields.Selection(
-        string='Fill Rate',
-        selection=[
-            ('lowest', '30'),
-            ('low', '50'),
-            ('medium', '70'),
-            ('high', '100'),
-        ]
-    )
-
-    deregistration_obstacle = fields.Boolean(
-        string='Deregistration Obstacle'
-    )
-
-    deformation = fields.Boolean(
-        string='Deformation'
-    )
-
-    crack = fields.Boolean(
-        string='Crack'
-    )
-
-    rupture = fields.Boolean(
-        string='Rupture'
-    )
-
-    partial_collapse_perforation = fields.Boolean(
-        string='Partial Collapse Perforation'
-    )
-
-    total_collapse = fields.Boolean(
-        string='Total Collapse'
-    )
-
-    visible_reinforcement = fields.Boolean(
-        string='Visible Reinforcement'
-    )
-
-    branch_penetrating = fields.Boolean(
-        string='Branch Penetrating'
-    )
-
-    sealing_gasket_appearing = fields.Boolean(
-        string='Sealing Gasket Appearing'
-    )
-
-    transverse_dislocation = fields.Boolean(
-        string='Transverse Dislocation'
-    )
-
-    direction_change = fields.Boolean(
-        string='Direction Change'
-    )
-
-    roots = fields.Boolean(
-        string='Roots'
-    )
-
-    infiltration = fields.Boolean(
-        string='Infiltration'
-    )
-
-    degradation = fields.Boolean(
-        string='Degradation'
-    )
-
     ivp_rating = fields.Selection(
         string='IVP Rating',
         selection=[
-            ('low', '1'),
-            ('medium', '2'),
-            ('high', '3'),
+            ('1', '1'),
+            ('2', '2'),
+            ('3', '3'),
         ]
-    )
-
-    date = fields.Date(
-        string='Data',
-        default=fields.Date.today(),
-        readonly=True
     )
 
     weather = fields.Selection(
@@ -169,6 +84,13 @@ class QuickDiagnosis(models.Model):
             ('heavy_rain', 'Heavy Rain'),
         ]
     )
+
+    trunk_ids = fields.One2many(
+        comodel_name='ona.trunk',
+        inverse_name='quick_diagnosis_id', 
+        string='Trunks'
+    )
+    
 
 
     
