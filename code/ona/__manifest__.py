@@ -14,7 +14,7 @@
     'website': "http://www.yourcompany.com",
     'category': 'Uncategorized',
     'version': '1.0',
-    'depends': ['base', 'hr'],
+    'depends': ['base', 'hr', 'res_region'],
     'data': [
         'security/ir.model.access.csv',
         'data/ir_sequence_sewer.xml',

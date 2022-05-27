@@ -16,6 +16,7 @@ class Trunk(models.Model):
     sewer_id = fields.Many2one(
         comodel_name='ona.sewer',
         domain="[('id', '!=', original_sewer_id)]",
+        readonly=True,
         required=True,
         string='Sewer'
     )

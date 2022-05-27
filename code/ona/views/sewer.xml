@@ -1,6 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
 
+
     <record id="sewer_view_search" model="ir.ui.view">
         <field name="name">sewer.view.search</field>
         <field name="model">ona.sewer</field>
@@ -34,14 +35,7 @@
                 <field name="commune_id"/>
                 <field name="longitude"/>
                 <field name="latitude"/>
-                <field name="buffer_accessibility" optional="hide" string="Buffer Accessibility" />
-                <field name="buffer_condition" widget="badge" string="Buffer Condition" 
-                    decoration-success="buffer_condition == 'good'"
-                    decoration-warning="buffer_condition == 'bad'"
-                    decoration-danger="buffer_condition == 'absent'"
-                    optional="hide"/>
 
-                <field name="buffer_level" optional="hide" string="Buffer Level (cm)"/>
                 <field name="state" widget="badge" 
                     decoration-info="state == 'draft'"
                     decoration-success="state == 'confirm'"
@@ -87,27 +81,19 @@
 
                     <group name="extra_info" string="Extra Information">
                         <group>
-                            <field name="ladder"/>
-                        </group>
-                        <group>
-                            <field name="decantation"/>
                             <field name="cunette"/>
                         </group>
                     </group>
 
+                
+
                     <notebook>
-                        <page name="buffer" string="Buffer">
-                            <group>
-                                <group>
-                                    <field name="buffer_accessibility"/>
-                                    <field name="buffer_condition"/>
-                                    <label for="buffer_level" string="Level"/>
-                                    <div class="o_row">
-                                        <field name="buffer_level" nolabel="1"/>
-                                        <span>cm</span>
-                                    </div>
-                                </group>
-                            </group>
+                        <page string="Info">
+                            <field name="sewer_ids">
+                                <tree editable="bottom">
+                                    <field name="sewer_child_id"/>
+                                </tree>
+                            </field>
                         </page>
                         <page name="note" string="Note">
                             <field name="note"/>

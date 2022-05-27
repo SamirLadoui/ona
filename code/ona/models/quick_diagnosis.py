@@ -1,4 +1,4 @@
-from odoo import api, fields, models
+from odoo import api,Command, fields, models
 
 
 class QuickDiagnosis(models.Model):
@@ -138,4 +138,22 @@ class QuickDiagnosis(models.Model):
         string='Level'
     )
 
+    note = fields.Text(
+        string='Note'
+    )
     
+    @api.onchange('sewer_id')
+    def onchange_sewer(self):
+        for rec in self:
+            rec.trunk_ids = False
+            if rec.sewer_id:
+                trunk_ids = rec.sewer_id.sewer_ids.mapped('sewer_child_id')
+                trunks = []
+                for trunk in trunk_ids:
+                    trunks.append(Command.create(
+                        {
+                            'sewer_id': trunk.id,
+                            'quick_diagnosis_id': rec.id
+                        }
+                    ))
+                rec.trunk_ids = trunks

@@ -2,6 +2,21 @@ from email.policy import default
 from odoo import api, fields, models
 
 
+class SewerLine(models.Model):
+    _name = 'ona.sewer.line'
+    _description = 'Sewer Parent/Child'
+
+    sewer_parent_id = fields.Many2one(
+        comodel_name='ona.sewer',
+        string='Parent'
+    )
+    
+    sewer_child_id = fields.Many2one(
+        comodel_name='ona.sewer',
+        string='Child'
+    )
+
+
 class Sewer(models.Model):
     _name = 'ona.sewer'
     _description = 'Sewer'
@@ -95,6 +110,13 @@ class Sewer(models.Model):
         default="draft",
         readonly=True
     )
+
+    sewer_ids = fields.One2many(
+        comodel_name='ona.sewer.line',
+        inverse_name='sewer_parent_id',
+        string='Sewer'
+    )
+    
 
     def action_draft(self):
         for rec in self:
