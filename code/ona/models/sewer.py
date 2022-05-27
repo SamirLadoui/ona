@@ -63,17 +63,6 @@ class Sewer(models.Model):
         string='Diameter',
     )
 
-    ladder = fields.Selection(
-        string='Ladder',
-        selection=[
-            ('good_condition', 'Good Condition'),
-            ('bad_condition', 'Bad Condition'),
-            ('absent', 'Absent'),
-            ],
-        required=True,
-        default="good_condition"
-    )
-
     type = fields.Selection(
         string='Type',
         selection=[
@@ -89,38 +78,6 @@ class Sewer(models.Model):
     cunette = fields.Boolean(
         string='Cunette',
         default=False
-    )
-
-    decantation = fields.Boolean(
-        string='Decantation',
-        default=False
-    )
-
-    buffer_accessibility = fields.Selection(
-        string='Accessibility',
-        selection=[
-            ('a', 'A'),
-            ('nma', 'NMA'),
-            ('nap', 'NAP'),
-            ('nac', 'NAC'),
-            ('pp', 'PP'),
-            ('s_bati', 'S/BATI'),
-            ],
-        required=True
-    )
-
-    buffer_condition = fields.Selection(
-        string='Condition',
-        selection=[
-            ('good', 'Good'),
-            ('bad', 'Bad'),
-            ('absent', 'Absent'),
-            ],
-        required=True
-        )
-    
-    buffer_level = fields.Float(
-        string='Level'
     )
 
     note = fields.Text(
