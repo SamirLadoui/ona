@@ -29,6 +29,13 @@
         <field name="model">ona.quick.diagnosis</field>
         <field name="arch" type="xml">
             <form string="">
+                <header>
+                    <button name="action_get_trunk_ids" string="Get Trunks" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_draft" string="Draft" type="object" states="cancel" />
+                    <button name="action_cancel" string="Cancel" type="object" states="draft,close" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,cancel"/>
+                </header>
                 <sheet>
                     <group>
                         <group>
@@ -46,10 +53,29 @@
                             <field name="buffer_condition"/>
                             <field name="buffer_level"/>
                         </group>
-
-                        <group string="Extra Information">
+                        <group string="Sewer">
+                            <field name="sewer_type"/>
+                            <field name="cunette"/>
                             <field name="ladder"/>
+                            <field name="trunk_count"/>
                             <field name="decantation"/>
+                            <field name="sewer_fill_rate"/>
+                            <field name="sewer_depth"/>
+                            <field name="sewer_deregistration_obstacle"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group string="Environment">
+                            <field name="vehicle_accessibility"/>
+                            <field name="traffic_density"/>
+                            <field name="h2s_risk"/>
+                            <field name="road_condition"/>
+                            <field name="ground_nature"/>
+                        </group>
+                        <group string="Extra Information">
+                            <field name="weather"/>
+                            <field name="ivp_rating"/>
                         </group>
                     </group>
 
@@ -65,7 +91,7 @@
                                     <field name="fill_rate"/>
                                     <field name="hydrocarbons_presence"/>
                                     <field name="deformation" optional="hide"/>
-                                    <field name="original_sewer_id"  invisible="0"/>
+                                    <field name="original_sewer_id" invisible="1"/>
                                 </tree>
                             </field>
                         </page>
@@ -74,7 +100,7 @@
                             <field name="note"/>
                         </page>
                     </notebook>
-                    
+
 
                 </sheet>
             </form>

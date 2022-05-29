@@ -7,4 +7,12 @@
         <field name="padding">5</field>
         <field name="company_id" eval="True"/>
     </record>
+
+    <record id="ona_ir_sequence_quick_diagnosis" model="ir.sequence">
+        <field name="name">Quick Diagnosis</field>
+        <field name="code">ona.quick.diagnosis</field>
+        <field name="prefix">QD#</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="True"/>
+    </record>
 </odoo>

@@ -1,3 +1,4 @@
+from email.policy import default
 from odoo import api, fields, models
 
 
@@ -17,7 +18,7 @@ class Trunk(models.Model):
         comodel_name='ona.sewer',
         domain="[('id', '!=', original_sewer_id)]",
         readonly=True,
-        required=True,
+        # required=True,
         string='Sewer'
     )
 
@@ -28,12 +29,10 @@ class Trunk(models.Model):
 
     length = fields.Float(
         string='Length',
-        required=True
     )
 
     diameter = fields.Float(
         string='Diameter',
-        required=True
     )
 
     depth = fields.Float(
@@ -52,7 +51,8 @@ class Trunk(models.Model):
             ('low', 'Low'),
             ('medium', 'Medium'),
             ('strong', 'Strong'),
-        ]
+        ],
+        default='dry'
     )
 
     hydrocarbons_presence = fields.Boolean(
@@ -67,7 +67,8 @@ class Trunk(models.Model):
             ('50', '50%'),
             ('70', '70%'),
             ('100', '100%'),
-        ]
+        ],
+        default='30'
     )
 
     deregistration_obstacle = fields.Boolean(

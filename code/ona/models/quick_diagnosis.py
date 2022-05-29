@@ -7,7 +7,11 @@ class QuickDiagnosis(models.Model):
 
     name = fields.Char(
         string='Name',
-        required=True
+        default="/",
+        required=True,
+        readonly=True,
+        copy=False,
+        index=True
     )
 
     sewer_id = fields.Many2one(
@@ -88,7 +92,7 @@ class QuickDiagnosis(models.Model):
     trunk_ids = fields.One2many(
         comodel_name='ona.trunk',
         inverse_name='quick_diagnosis_id', 
-        string='Trunks'
+        string='Trunks',
     )
 
     #####################################
@@ -103,7 +107,6 @@ class QuickDiagnosis(models.Model):
             ('absent', 'Absent'),
             ],
         required=True,
-        default="good_condition"
     )
 
     decantation = fields.Boolean(
@@ -142,18 +145,77 @@ class QuickDiagnosis(models.Model):
         string='Note'
     )
     
+    state = fields.Selection(
+        string='Statut', 
+        selection=[
+            ('draft', 'Draft'),
+            ('confirm', 'Confirm'),
+            ('cancel', 'Cancel'),
+            ],
+        default="draft",
+        readonly=True
+    )
+    
+    trunk_count = fields.Integer(
+        related='sewer_id.trunk_count',
+    )
+    
+    cunette = fields.Boolean(
+        related='sewer_id.cunette',
+    )
+    
+    sewer_type = fields.Selection(
+        related='sewer_id.type',
+    )
+    
+    sewer_fill_rate = fields.Selection(
+        string='Fill Rate',
+        required=True,
+        selection=[
+            ('30', '30%'),
+            ('50', '50%'),
+            ('70', '70%'),
+            ('100', '100%'),
+        ],
+    )
+    
+    sewer_depth = fields.Float(
+        string='Depth'
+    )
+    
+    sewer_deregistration_obstacle = fields.Boolean(
+        string='Deregistration Obstacle'
+    )
+    
     @api.onchange('sewer_id')
-    def onchange_sewer(self):
+    def _onchange_sewer_id(self):
+        for qd in self:
+            qd.trunk_ids = [Command.delete(trunk_id.id) for trunk_id in qd.trunk_ids]
+    
+    
+    def action_get_trunk_ids(self):
         for rec in self:
-            rec.trunk_ids = False
+            trunks = [Command.delete(trunk_id.id) for trunk_id in rec.trunk_ids]
             if rec.sewer_id:
-                trunk_ids = rec.sewer_id.sewer_ids.mapped('sewer_child_id')
-                trunks = []
+                trunk_ids = rec.sewer_id.sewer_ids
                 for trunk in trunk_ids:
                     trunks.append(Command.create(
                         {
                             'sewer_id': trunk.id,
-                            'quick_diagnosis_id': rec.id
                         }
                     ))
-                rec.trunk_ids = trunks
+            rec.trunk_ids = trunks
+    
+    def action_draft(self):
+        for rec in self:
+            rec.state = 'draft'
+                
+    def action_confirm(self):
+        for rec in self:
+            if rec.name == "/":
+                rec.name = self.env['ir.sequence'].next_by_code('ona.quick.diagnosis')
+            rec.state = 'confirm'
+            
+    def action_cancel(self):
+        for rec in self:
+            rec.state = 'cancel'

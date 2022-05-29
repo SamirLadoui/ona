@@ -17,7 +17,7 @@
     'depends': ['base', 'hr', 'res_region'],
     'data': [
         'security/ir.model.access.csv',
-        'data/ir_sequence_sewer.xml',
+        'data/ir_sequence.xml',
         'views/sewer.xml',
         'views/quick_diagnosis.xml',
         'views/trunk.xml',

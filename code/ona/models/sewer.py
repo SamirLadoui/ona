@@ -1,5 +1,6 @@
 from email.policy import default
-from odoo import api, fields, models
+from odoo import api, Command, fields, models
+from odoo.exceptions import UserError
 
 
 class SewerLine(models.Model):
@@ -64,14 +65,12 @@ class Sewer(models.Model):
         string='Area',
     )
 
-    longitude = fields.Char(
+    longitude = fields.Float(
         string='Longitude',
-        required=True
     )
     
-    latitude = fields.Char(
+    latitude = fields.Float(
         string='Latitude',
-        required=True
     )
 
     diameter = fields.Float(
@@ -111,11 +110,54 @@ class Sewer(models.Model):
         readonly=True
     )
 
-    sewer_ids = fields.One2many(
-        comodel_name='ona.sewer.line',
-        inverse_name='sewer_parent_id',
-        string='Sewer'
+    sewer_ids = fields.Many2many(
+        comodel_name='ona.sewer',
+        string='Trunks',
+        domain="[('id', '!=', id), ('trunk_count', '<', 4)]",
+        relation='sewer_sewer_rel',
+        column1='linked_sewer_ids',
+        column2='sewer_ids',
     )
+    
+    
+    linked_sewer_ids = fields.Many2many(
+        string='Linked Sewer',
+        comodel_name='ona.sewer',
+        relation='sewer_sewer_rel',
+        column1='sewer_ids',
+        column2='linked_sewer_ids',
+    )
+    
+    
+    trunk_count = fields.Integer(
+        string='Trunk Count',
+        compute='_compute_trunk_count',
+        store=True
+    )
+    
+    @api.depends('sewer_ids')
+    def _compute_trunk_count(self):
+        for rec in self:
+            rec.trunk_count = len(rec.sewer_ids)
+            
+    @api.constrains('trunk_count')
+    def _check_trunk_count(self):
+        for rec in self:
+            if rec.trunk_count > 4:
+                raise UserError("You can't have more than 4 sewers")
+    
+    
+    @api.constrains('sewer_ids')
+    def _constrains_sewer_ids(self):
+        for sewer in self:
+            for s in sewer.sewer_ids:
+                if sewer not in s.sewer_ids:
+                    s.sewer_ids = [Command.link(sewer.id)]
+            unlinked_sewers = self.env['ona.sewer'].search([('id', 'not in', sewer.sewer_ids.ids)])
+            for us in unlinked_sewers:
+                if sewer in us.sewer_ids:
+                    us.sewer_ids = [Command.unlink(sewer.id)]
+    
     
 
     def action_draft(self):
