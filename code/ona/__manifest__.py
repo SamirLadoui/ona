@@ -20,6 +20,7 @@
         'data/ir_sequence.xml',
         'views/sewer.xml',
         'views/quick_diagnosis.xml',
+        'views/drainage.xml',
         'views/trunk.xml',
         'views/menu.xml',
     ],

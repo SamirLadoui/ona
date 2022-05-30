@@ -1,0 +1,66 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <!-- model.name search view -->
+    <record id="drainage_view_search" model="ir.ui.view">
+        <field name="name">drainage.search</field>
+        <field name="model">ona.drainage</field>
+        <field name="arch" type="xml">
+            <search string="Search Description">
+                <field name="name"/>
+            </search>
+        </field>
+    </record>
+
+
+    <!-- model.name tree view -->
+    <record id="drainage_view_tree" model="ir.ui.view">
+        <field name="name">drainage.tree</field>
+        <field name="model">ona.drainage</field>
+        <field name="arch" type="xml">
+            <tree>
+                <field name="name"/>
+            </tree>
+        </field>
+    </record>
+
+    <!-- model.name form view -->
+    <record id="drainage_form" model="ir.ui.view">
+        <field name="name">drainage.form</field>
+        <field name="model">ona.drainage</field>
+        <field name="arch" type="xml">
+            <form string="">
+                <header>
+                    <button name="action_confirm" string="Confirm" type="object" states="draft" class="oe_highlight"/>
+                    <button name="action_draft" string="Draft" type="object" states="cancel" />
+                    <button name="action_cancel" string="Cancel" type="object" states="draft,close" />
+                    <field name="state" widget="statusbar" statusbar_visible="draft,confirm,cancel"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                        </group>
+                        <group>
+                            <field name="date"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Note">
+                            <field name="note"/>
+                        </page>
+                    </notebook>
+
+
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="drainage_action" model="ir.actions.act_window">
+        <field name="name">Drainage</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">ona.drainage</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+</odoo>

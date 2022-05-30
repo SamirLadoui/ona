@@ -15,4 +15,12 @@
         <field name="padding">5</field>
         <field name="company_id" eval="True"/>
     </record>
+
+    <record id="ona_ir_sequence_drainage" model="ir.sequence">
+        <field name="name">Drainage</field>
+        <field name="code">ona.drainage</field>
+        <field name="prefix">D#</field>
+        <field name="padding">5</field>
+        <field name="company_id" eval="True"/>
+    </record>
 </odoo>
