@@ -41,6 +41,7 @@
                         <group>
                             <field name="name"/>
                             <field name="sewer_id"/>
+                            <field name="responsible"/>
                         </group>
                         <group>
                             <field name="date"/>

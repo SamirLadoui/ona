@@ -19,6 +19,12 @@ class QuickDiagnosis(models.Model):
         required=True,
         string='Sewer'
     )
+    
+    responsible = fields.Many2one(
+        comodel_name='hr.employee',
+        required=True,
+        string='Responsible'
+    )
 
     date = fields.Datetime(
         string='Date',
@@ -135,7 +141,7 @@ class QuickDiagnosis(models.Model):
             ('absent', 'Absent'),
             ],
         required=True
-        )
+    )
     
     buffer_level = fields.Float(
         string='Level'
@@ -146,7 +152,7 @@ class QuickDiagnosis(models.Model):
     )
     
     state = fields.Selection(
-        string='Statut', 
+        string='Status', 
         selection=[
             ('draft', 'Draft'),
             ('confirm', 'Confirm'),

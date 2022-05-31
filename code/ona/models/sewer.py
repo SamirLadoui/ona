@@ -100,7 +100,7 @@ class Sewer(models.Model):
     
     
     state = fields.Selection(
-        string='Statut', 
+        string='Status', 
         selection=[
             ('draft', 'Draft'),
             ('confirm', 'Confirm'),
