@@ -59,6 +59,12 @@
                                 <tree>
                                     <field name="address"/>
                                     <field name="state" widget="badge" decoration-warning="state == 'unaccomplished'" decoration-success="state == 'accomplished'" decoration-danger="state == 'cancel'" />
+                                    <field name="ml_pipes"/>
+                                    <field name="nbr_sewers"/>
+                                    <field name="nbr_drains"/>
+                                    <field name="ml_channels"/>
+                                    <field name="waste"/>
+                                    <field name="ml_aspiration"/>
                                 </tree>
                             </field>
                         </page>
@@ -92,6 +98,19 @@
                         </group>
                         <group>
                             <field name="date"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <group>
+                            <field name="ml_pipes"/>
+                            <field name="nbr_sewers"/>
+                            <field name="nbr_drains"/>
+                        </group>
+                        <group>
+                            <field name="ml_channels"/>
+                            <field name="waste"/>
+                            <field name="ml_aspiration"/>
                         </group>
                     </group>
 

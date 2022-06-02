@@ -31,7 +31,6 @@ class QuickDiagnosis(models.Model):
         default=fields.Datetime.now,
         readonly=True
     )
-    
 
     vehicle_accessibility = fields.Selection(
         string='Vehicle Accessibility',
@@ -100,10 +99,6 @@ class QuickDiagnosis(models.Model):
         inverse_name='quick_diagnosis_id', 
         string='Trunks',
     )
-
-    #####################################
-    ## new fields (from sewer to here) ##
-    #####################################
 
     ladder = fields.Selection(
         string='Ladder',
@@ -225,3 +220,4 @@ class QuickDiagnosis(models.Model):
     def action_cancel(self):
         for rec in self:
             rec.state = 'cancel'
+            

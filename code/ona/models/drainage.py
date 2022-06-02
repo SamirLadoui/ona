@@ -1,3 +1,4 @@
+from typing_extensions import Required
 from odoo import api,Command, fields, models
 
 class DrainageLine(models.Model):
@@ -17,6 +18,38 @@ class DrainageLine(models.Model):
         string='Address',
         required=True,
     )
+
+    ml_pipes = fields.Integer(
+        string='Pipe',
+    )
+
+    nbr_sewers = fields.Integer(
+        string='Sewers',
+    )
+
+    nbr_drains = fields.Integer(
+        string='Drains',
+    )
+
+    ml_channels = fields.Integer(
+        string='Channels',
+    )
+
+    ml_aspiration = fields.Integer(
+        string='Aspiration',
+    )
+
+    waste = fields.Selection(
+        string='Waste', 
+        selection=[
+            ('1/4', '1/4'),
+            ('1/2', '1/2'),
+            ('1/3', '1/3'),
+            ('1', '1'),
+        ],
+        default="1/4",
+        required=True,
+    )
     
     state = fields.Selection(
         string='Status', 
@@ -25,7 +58,7 @@ class DrainageLine(models.Model):
             ('unaccomplished', 'Unaccomplished'),
             ('accomplished', 'Accomplished'),
             ('cancel', 'Cancel'),
-            ],
+        ],
         default="draft",
         readonly=True
     )
