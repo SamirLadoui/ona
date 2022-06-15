@@ -52,7 +52,11 @@
                         <group string="Buffer">
                             <field name="buffer_accessibility"/>
                             <field name="buffer_condition"/>
-                            <field name="buffer_level"/>
+                            <label for="buffer_level" />
+                            <div class="o_row">
+                                <field name="buffer_level"/>
+                                <span>cm</span>
+                            </div>
                         </group>
                         <group string="Sewer">
                             <field name="sewer_type"/>

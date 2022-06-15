@@ -17,11 +17,23 @@
 
                     <group>
                         <group string="string">
-                            <field name="length"/>
-                            <field name="diameter"/>
+                             <label for="length" />
+                            <div class="o_row">
+                                <field name="length"/>
+                                <span>m</span>
+                            </div>
+                             <label for="diameter" />
+                            <div class="o_row">
+                                <field name="diameter"/>
+                                <span>cm</span>
+                            </div>
                         </group>
                         <group string="Water">
-                            <field name="depth"/>
+                            <label for="depth" />
+                            <div class="o_row">
+                                <field name="depth"/>
+                                <span>m</span>
+                            </div>
                             <field name="flow"/>
                             <field name="fill_rate"/>
                             <field name="hydrocarbons_presence"/>

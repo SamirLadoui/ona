@@ -54,7 +54,7 @@
                     </group>
 
                     <notebook>
-                        <page string="Adresses">
+                        <page string="Addresses">
                             <field name="drainage_line_ids">
                                 <tree>
                                     <field name="address"/>
@@ -64,7 +64,7 @@
                                     <field name="nbr_drains"/>
                                     <field name="ml_channels"/>
                                     <field name="waste"/>
-                                    <field name="ml_aspiration"/>
+                                    <field name="mcube_aspiration"/>
                                 </tree>
                             </field>
                         </page>
@@ -103,14 +103,28 @@
 
                     <group>
                         <group>
-                            <field name="ml_pipes"/>
+                            <label for="ml_pipes" />
+                            <div class="o_row">
+                                <field name="ml_pipes"/>
+                                <span>ml</span>
+                            </div>
                             <field name="nbr_sewers"/>
                             <field name="nbr_drains"/>
                         </group>
                         <group>
-                            <field name="ml_channels"/>
+                            <label for="ml_channels" />
+                            <div class="o_row">
+                                <field name="ml_channels"/>
+                                <span>ml</span>
+                            </div>
                             <field name="waste"/>
-                            <field name="ml_aspiration"/>
+                            <label for="mcube_aspiration" />
+                            <div class="o_row">
+                                <field name="mcube_aspiration"/>
+                                <span>
+                                    m<sup>3</sup>
+                                </span>
+                            </div>
                         </group>
                     </group>
 

@@ -35,7 +35,7 @@ class DrainageLine(models.Model):
         string='Channels',
     )
 
-    ml_aspiration = fields.Integer(
+    mcube_aspiration = fields.Integer(
         string='Aspiration',
     )
 

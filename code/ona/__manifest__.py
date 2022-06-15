@@ -23,5 +23,6 @@
         'views/drainage.xml',
         'views/trunk.xml',
         'views/menu.xml',
+        'report/ona_drainage_report.xml'
     ],
 }
