@@ -60,6 +60,11 @@
                         </group>
                         <group string="Sewer">
                             <field name="sewer_type"/>
+                            <label for="sewer_diameter" />
+                            <div class="o_row">
+                                <field name="sewer_diameter"/>
+                                <span>cm</span>
+                            </div>
                             <field name="cunette"/>
                             <field name="ladder"/>
                             <field name="trunk_count"/>

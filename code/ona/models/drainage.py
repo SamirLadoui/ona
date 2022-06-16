@@ -1,4 +1,3 @@
-from typing_extensions import Required
 from odoo import api,Command, fields, models
 
 class DrainageLine(models.Model):

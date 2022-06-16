@@ -168,6 +168,10 @@ class QuickDiagnosis(models.Model):
     sewer_type = fields.Selection(
         related='sewer_id.type',
     )
+
+    sewer_diameter = fields.Float(
+        related='sewer_id.diameter',
+    )
     
     sewer_fill_rate = fields.Selection(
         string='Fill Rate',

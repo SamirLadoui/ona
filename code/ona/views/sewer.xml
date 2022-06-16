@@ -1,7 +1,5 @@
 <?xml version='1.0' encoding='utf-8'?>
 <odoo>
-
-
     <record id="sewer_view_search" model="ir.ui.view">
         <field name="name">sewer.view.search</field>
         <field name="model">ona.sewer</field>
@@ -20,7 +18,6 @@
             </search>
         </field>
     </record>
-
 
     <record id="sewer_view_tree" model="ir.ui.view">
         <field name="name">sewer.view.tree</field>
@@ -77,9 +74,15 @@
                         <group>
                             <field name="cunette"/>
                         </group>
+
+                        <group>
+                            <label for="diameter" />
+                            <div class="o_row">
+                                <field name="diameter"/>
+                                <span>cm</span>
+                            </div>
+                        </group>
                     </group>
-
-
 
                     <notebook>
                         <page string="Info">
@@ -105,5 +108,4 @@
         <field name="context">{'search_default_group_by_state': 1, 'search_default_group_by_commune': 1}</field>
 
     </record>
-
 </odoo>

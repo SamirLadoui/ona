@@ -1,0 +1,1419 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="paperformat_ona_quick" model="report.paperformat">
+        <field name="name">ONA</field>
+        <field name="default" eval="True"/>
+        <field name="format">A4</field>
+        <field name="page_height">0</field>
+        <field name="page_width">0</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">2</field>
+        <field name="margin_bottom">2</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">102</field>
+    </record>
+    
+    <record id="ona_quick_diagnosis_report" model="ir.actions.report">
+        <field name="name">Diagnostique Rapide</field>
+        <field name="model">ona.quick.diagnosis</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">ona.ona_quick_diagnosis_template</field>
+        <field name="report_file">ona.ona_quick_diagnosis_template</field>
+        <field name="print_report_name">'Diagnostique Rapide - %s' % (object.name).replace('/', '')</field>
+        <field name="binding_model_id" ref="model_ona_quick_diagnosis"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_ona_quick"/>
+    </record>
+
+    <template id="ona_quick_diagnosis_template">
+        <t t-call="web.basic_layout">
+            <style>
+                .custom-table {
+                    width: 100%;
+                    border: 1px solid #000;
+                }
+                .custom-table th, .custom-table td {
+                    border: 1px solid #000;
+                    padding: 2px 4px;
+                    vertical-align: middle;
+                }
+                .align-items-center {
+                    -webkit-box-align: center;
+                    align-items: center !important;
+                }
+                * {
+                    font-size: 15px !important;
+                }
+            </style>
+            <div class="page">
+                <t t-foreach="docs" t-as="o">
+                    <t t-if="not company">
+                        <!-- Multicompany -->
+                        <t t-if="company_id">
+                            <t t-set="company" t-value="company_id"/>
+                        </t>
+                        <t t-elif="o and 'company_id' in o and o.company_id.sudo()">
+                            <t t-set="company" t-value="o.company_id.sudo()"/>
+                        </t>
+                        <t t-else="else">
+                            <t t-set="company" t-value="res_company"/>
+                        </t>
+                    </t>
+
+                    <table class="custom-table">
+                        <tbody>
+                            <tr>
+                                <td colspan="8">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <strong>
+                                                Ministre des Ressources en Eau<br />
+                                                Office National d'Assainissement<br />
+                                                Zone Annaba-Unite Annaba
+                                            </strong>
+                                        </div>
+                                        <div class="col-4 text-center">
+                                            <strong>
+                                                Inspection Videoriscopique (IVP)<br />
+                                                Diagnostique Rapide
+                                            </strong>
+                                        </div>
+                                        <div class="col-4 text-right">
+                                            <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" class="mr-2" style="height:60px;"/>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            
+                            <tr>
+                                <td class="border-right-0">
+                                    <span class="font-weight-bold">Agent : </span>
+                                    <span t-esc="o.responsible.name" />
+                                </td>
+                                <td class="border-right-0 border-left-0" colspan="2">
+                                    <span class="font-weight-bold">Autres : </span>
+                                    <span>.....</span>
+                                </td>
+                                <td class="border-right-0 border-left-0" colspan="2">
+                                    <span class="font-weight-bold">Date : </span>
+                                    <span t-esc="o.date.strftime('%Y-%m-%d')" />
+                                </td>
+                                <td class="border-left-0 text-center" colspan="3">
+                                    <div class="d-flex align-items-center">
+                                        <div class="mr-5 font-weight-bold">Meteo : </div>
+                                        <div class="text-left ml-2">
+                                            <span class="d-block">
+                                                <t t-if="o.weather != 'dry'">
+                                                    <p class="m-0"><del>Sec</del></p>
+                                                </t>
+                                                <t t-else="1">
+                                                    Sec
+                                                </t>
+                                            </span>
+                                            <span class="d-block">
+                                                <t t-if="o.weather != 'rain'">
+                                                    <p class="m-0"><del>Pluie Moyenne</del></p>
+                                                </t>
+                                                <t t-else="1">
+                                                    Pluie Moyenne
+                                                </t>
+                                            </span>
+                                            <span class="d-block">
+                                                <t t-if="o.weather != 'heavy_rain'">
+                                                    <p class="m-0"><del>Pluie Forte</del></p>
+                                                </t>
+                                                <t t-else="1">
+                                                    Pluie Forte
+                                                </t>
+                                            </span>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="4">
+                                    <span class="font-weight-bold">Identifiant du regard : </span>
+                                    <span t-esc="o.sewer_id.name" />
+                                </td>
+                                <td colspan="4">
+                                    <span class="font-weight-bold">Commune : </span>
+                                    <span t-esc="o.sewer_id.commune_id.name" />
+                                </td>
+                            </tr>
+                            <tr>
+                                <td colspan="4">
+                                    <span class="font-weight-bold">N° de secteur : </span>
+                                    <span t-esc="o.sewer_id.area" />
+                                </td>
+                                <td colspan="4">
+                                    <span class="font-weight-bold">Adresse : </span>
+                                    <span t-esc="o.sewer_id.address" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="8">
+                                    <p class="font-weight-bold m-0"><u>Tampon</u></p>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Accessibilité du tampon :</td>
+                                <td style="width:8%">
+                                    <t t-if="o.buffer_accessibility != 'a'">
+                                        <p class="m-0"><del>A</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        A
+                                    </t>
+                                </td>
+                                <td style="width:10%">
+                                    <t t-if="o.buffer_accessibility != 'nma'">
+                                        <p class="m-0"><del>NMA</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        NMA
+                                    </t>
+                                </td>
+                                <td style="width:10%">
+                                    <t t-if="o.buffer_accessibility != 'nap'">
+                                        <p class="m-0"><del>NAP</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        NAP
+                                    </t>
+                                </td>
+                                <td style="width:10%">
+                                    <t t-if="o.buffer_accessibility != 'nac'">
+                                        <p class="m-0"><del>NAC</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        NAC
+                                    </t>
+                                </td>
+                                <td style="width:10%">
+                                    <t t-if="o.buffer_accessibility != 'pp'">
+                                        <p class="m-0"><del>PP</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        PP
+                                    </t>
+                                </td>
+                                <td style="width:10%">
+                                    <t t-if="o.buffer_accessibility != 's_bati'">
+                                        <p class="m-0"><del>S/BATI</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        S/BATI
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl">تواجد الغطاء :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Etat du tampon :</td>
+                                <td colspan="2">
+                                    <t t-if="o.buffer_condition != 'good'">
+                                        <p class="m-0"><del>Bon</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Bon
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.buffer_condition != 'bad'">
+                                        <p class="m-0"><del>Mauvais</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Mauvais
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.buffer_condition != 'absent'">
+                                        <p class="m-0"><del>Absent</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Absent
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl">حالة الغطاء :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Niveau du tampon :</td>
+                                <td colspan="2">niveau normal</td>
+                                <td colspan="2">
+                                    <span t-attf-style="text-decoration:#{'line-through' if 0 >= o.buffer_level else 'none'}">surelevé = </span>
+                                    <span t-if="o.buffer_level > 0" t-esc="o.buffer_level" />
+                                </td>
+                                <td colspan="2">
+                                    <span t-attf-style="text-decoration:#{'line-through' if 0 >= o.buffer_level else 'none'}">mons elevé = </span>
+                                    <span t-if="0 > o.buffer_level" t-esc="o.buffer_level" />
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl">مستوى الغطاء :</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="8">
+                                    <p class="font-weight-bold m-0"><u>Regard</u></p>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Situation du regard :</td>
+                                <td>
+                                    <t t-if="o.sewer_id.type != 'road'">
+                                        <p class="m-0"><del>Route</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Route
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.sewer_id.type != 'sidewalk'">
+                                        <p class="m-0"><del>Trottoir</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Trottoir
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.sewer_id.type != 'terrain'">
+                                        <p class="m-0"><del>Terrain</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Terrain
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.sewer_id.type != 'other'">
+                                        <p class="m-0"><del>Autres</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Autres
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="3">حالة البالوعة :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Cunette :</td>
+                                <td>
+                                    <t t-if="not o.cunette">
+                                        <p class="m-0"><del>Oui</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Oui
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.cunette">
+                                        <p class="m-0"><del>Non</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="5">المجرى السفلي :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Nbre de branchements :</td>
+                                <td>
+                                    <span t-esc="o.trunk_count" />
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="6">عدد الأنابيب الموصولة :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Decantation :</td>
+                                <td>
+                                    <t t-if="not o.decantation">
+                                        <p class="m-0"><del>Oui</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Oui
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.decantation">
+                                        <p class="m-0"><del>Non</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-bottom-0" colspan="5" />
+                            </tr>
+
+                            <tr>
+                                <td colspan="8">
+                                    <p class="font-weight-bold m-0"><u>Environnement</u></p>
+                                </td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Accessibilité vehicule :</td>
+                                <td colspan="2">
+                                    <t t-if="o.vehicle_accessibility != 'nac'">
+                                        <p class="m-0"><del>NAC</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        NAC
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.vehicle_accessibility != 'vl'">
+                                        <p class="m-0"><del>VL</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        VL
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.vehicle_accessibility != 'pl'">
+                                        <p class="m-0"><del>PL</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        PL
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl">إمكانية دخول بالسيارة :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Densité du trafic :</td>
+                                <td>
+                                    <t t-if="o.traffic_density != 'null'">
+                                        <p class="m-0"><del>Nulle</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Nulle
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.traffic_density != 'rare'">
+                                        <p class="m-0"><del>Rare</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Rare
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.traffic_density != 'medium'">
+                                        <p class="m-0"><del>Moyenne</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Moyenne
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.traffic_density != 'dense'">
+                                        <p class="m-0"><del>Dense</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Dense
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="3">حركة المرور :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Risque H2S :</td>
+                                <td>
+                                    <t t-if="not o.h2s_risk">
+                                        <p class="m-0"><del>Oui</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Oui
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.h2s_risk">
+                                        <p class="m-0"><del>Non</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="5">خطر غاز H2S :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Etat de la chaussée :</td>
+                                <td>
+                                    <t t-if="o.road_condition != 'bitumen'">
+                                        <p class="m-0"><del>Bitume</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Bitume
+                                    </t>
+                                </td>
+                                <td>
+                                    <t t-if="o.road_condition != 'ground'">
+                                        <p class="m-0"><del>Terre</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Terre
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl" colspan="5">خطر غاز H2S :</td>
+                            </tr>
+                            <tr class="text-center">
+                                <td class="text-right font-weight-bold">Nature du terrain :</td>
+                                <td colspan="2">
+                                    <t t-if="o.ground_nature != 'flat'">
+                                        <p class="m-0"><del>Plane</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Plane
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.ground_nature != 'slope'">
+                                        <p class="m-0"><del>Pente</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Pente
+                                    </t>
+                                </td>
+                                <td colspan="2">
+                                    <t t-if="o.ground_nature != 'steep_slope'">
+                                        <p class="m-0"><del>Forte Pente</del></p>
+                                    </t>
+                                    <t t-else="1">
+                                        Forte Pente
+                                    </t>
+                                </td>
+                                <td class="text-right border-bottom-0 font-weight-bold" dir="rtl">إنحدار الأرضية :</td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="8" class="bg-dark" style="height:5px" />
+                            </tr>
+
+                            <tr class="text-center">
+                                <th colspan="2" />
+                                <th>Regard</th>
+                                <th>Troncon1</th>
+                                <th>Troncon2</th>
+                                <th>Troncon3</th>
+                                <th>Troncon4</th>
+                                <td class="border-0"></td>
+                            </tr>
+
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Identifiant SIG :</span>
+                                    <span class="float-right" dir="rtl">رقم البالوعة :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].sewer_id.name" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].sewer_id.name" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].sewer_id.name" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].sewer_id.name" />
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Longeur (m) :</span>
+                                    <span class="float-right" dir="rtl">المسافة (م) :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].length" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].length" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].length" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].length" />
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Diametre (cm) :</span>
+                                    <span class="float-right" dir="rtl">القطر (سم) :</span>
+                                </td>
+                                <td class="text-center">
+                                    <span t-esc="o.sewer_id.diameter" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].diameter" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].diameter" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].diameter" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].diameter" />
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Profondeur / cote fil d'eau (m) :</span>
+                                    <span class="float-right" dir="rtl">عمق المياه (م) :</span>
+                                </td>
+                                <td class="text-center">
+                                    <span t-esc="o.sewer_depth" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].depth" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].depth" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].depth" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].depth" />
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Matériaux :</span>
+                                    <span class="float-right" dir="rtl">المادة :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <!-- <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].length" /> -->
+                                </td>
+                                <td class="text-center">
+                                    <!-- <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].length" /> -->
+                                </td>
+                                <td class="text-center">
+                                    <!-- <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].length" /> -->
+                                </td>
+                                <td class="text-center">
+                                    <!-- <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].length" /> -->
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="7" class="bg-dark" style="height:5px" />
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Débit :</span>
+                                    <span class="float-right" dir="rtl">درجة التدفق :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="o.trunk_ids[0].flow == 'dry'">
+                                        Sec
+                                    </t>
+                                    <t t-elif="o.trunk_ids[0].flow == 'low'">
+                                        Faible
+                                    </t>
+                                    <t t-elif="o.trunk_ids[0].flow == 'medium'">
+                                        Moyen
+                                    </t>
+                                    <t t-elif="o.trunk_ids[0].flow == 'strong'">
+                                        Fort
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="o.trunk_ids[1].flow == 'dry'">
+                                        Sec
+                                    </t>
+                                    <t t-elif="o.trunk_ids[1].flow == 'low'">
+                                        Faible
+                                    </t>
+                                    <t t-elif="o.trunk_ids[1].flow == 'medium'">
+                                        Moyen
+                                    </t>
+                                    <t t-elif="o.trunk_ids[1].flow == 'strong'">
+                                        Fort
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="o.trunk_ids[2].flow == 'dry'">
+                                        Sec
+                                    </t>
+                                    <t t-elif="o.trunk_ids[2].flow == 'low'">
+                                        Faible
+                                    </t>
+                                    <t t-elif="o.trunk_ids[2].flow == 'medium'">
+                                        Moyen
+                                    </t>
+                                    <t t-elif="o.trunk_ids[2].flow == 'strong'">
+                                        Fort
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="o.trunk_ids[3].flow == 'dry'">
+                                        Sec
+                                    </t>
+                                    <t t-elif="o.trunk_ids[3].flow == 'low'">
+                                        Faible
+                                    </t>
+                                    <t t-elif="o.trunk_ids[3].flow == 'medium'">
+                                        Moyen
+                                    </t>
+                                    <t t-elif="o.trunk_ids[3].flow == 'strong'">
+                                        Fort
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Présence d'hydrocarbures :</span>
+                                    <span class="float-right" dir="rtl">وجود مواد نفطية :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].hydrocarbons_presence">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].hydrocarbons_presence">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].hydrocarbons_presence">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].hydrocarbons_presence">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Taux de remplissage (%) :</span>
+                                    <span class="float-right" dir="rtl">درجة إمتلاء القناة (%) :</span>
+                                </td>
+                                <td class="text-center">
+                                    <span t-esc="o.sewer_fill_rate" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 1" t-esc="o.trunk_ids[0].fill_rate" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 2" t-esc="o.trunk_ids[1].fill_rate" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) >= 3" t-esc="o.trunk_ids[2].fill_rate" />
+                                </td>
+                                <td class="text-center">
+                                    <span t-if="len(o.trunk_ids) == 4" t-esc="o.trunk_ids[3].fill_rate" />
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Obstacle sur le radier :</span>
+                                    <span class="float-right" dir="rtl">وجود حاجز في قاع القناة :</span>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="o.sewer_deregistration_obstacle">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].deregistration_obstacle">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].deregistration_obstacle">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].deregistration_obstacle">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].deregistration_obstacle">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="8" class="bg-dark" style="height:5px" />
+                            </tr>
+
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Déformation :</span>
+                                    <span class="float-right" dir="rtl">تشوه :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].deformation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].deformation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].deformation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].deformation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Fissure :</span>
+                                    <span class="float-right" dir="rtl">تشقق :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].crack">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].crack">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].crack">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].crack">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Rupture :</span>
+                                    <span class="float-right" dir="rtl">كسر :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].rupture">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].rupture">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].rupture">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].rupture">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Perforation effondrement partiel :</span>
+                                    <span class="float-right" dir="rtl">ثقب أو إنهيار جزئي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].partial_collapse_perforation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].partial_collapse_perforation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].partial_collapse_perforation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].partial_collapse_perforation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Effondrement total :</span>
+                                    <span class="float-right" dir="rtl">إنهيار كلي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].total_collapse">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].total_collapse">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].total_collapse">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].total_collapse">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Armature visible :</span>
+                                    <span class="float-right" dir="rtl">القضبان الحديدية مرئية :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].visible_reinforcement">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].visible_reinforcement">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].visible_reinforcement">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].visible_reinforcement">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Branchement penetrant :</span>
+                                    <span class="float-right" dir="rtl">أنبوب داخل :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].branch_penetrating">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].branch_penetrating">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].branch_penetrating">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].branch_penetrating">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Joint d'etancheité apparent :</span>
+                                    <span class="float-right" dir="rtl">مانع للتسرب ظاهر :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].sealing_gasket_appearing">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].sealing_gasket_appearing">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].sealing_gasket_appearing">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].sealing_gasket_appearing">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Déboitement longitudinal :</span>
+                                    <span class="float-right" dir="rtl">خلغ طولي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].longitudinal_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].longitudinal_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].longitudinal_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].longitudinal_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Déboitement vertical :</span>
+                                    <span class="float-right" dir="rtl">خلع عمودي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].vertical_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].vertical_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].vertical_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].vertical_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Déboitement transversal :</span>
+                                    <span class="float-right" dir="rtl">خلع شعاعي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].transverse_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].transverse_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].transverse_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].transverse_dislocation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Changement de direction :</span>
+                                    <span class="float-right" dir="rtl">تغيير الإتجاه :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].direction_change">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].direction_change">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].direction_change">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].direction_change">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Racines :</span>
+                                    <span class="float-right" dir="rtl">الجدور :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].roots">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].roots">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].roots">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].roots">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Infiltration :</span>
+                                    <span class="float-right" dir="rtl">تسرب داخلي :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].infiltration">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].infiltration">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].infiltration">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].infiltration">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Degradation :</span>
+                                    <span class="float-right" dir="rtl">تدهور :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 1 and o.trunk_ids[0].degradation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 2 and o.trunk_ids[1].degradation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) >= 3 and o.trunk_ids[2].degradation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="text-center">
+                                    <t t-if="len(o.trunk_ids) == 4 and o.trunk_ids[3].degradation">
+                                        Oui
+                                    </t>
+                                    <t t-else="1">
+                                        Non
+                                    </t>
+                                </td>
+                                <td class="border-0"></td>
+                            </tr>
+                            <tr>
+                                <td class="font-weight-bold" colspan="2">
+                                    <span>Note IVP (1-2-3) :</span>
+                                    <span class="float-right" dir="rtl">علامة IVP :</span>
+                                </td>
+                                <td class="bg-dark" />
+                                <td class="bg-dark" />
+                                <td class="bg-dark" />
+                                <td class="bg-dark" />
+                                <td class="bg-dark" />
+                                <td class="text-center">
+                                    <span t-esc="o.ivp_rating" />
+                                </td>
+                            </tr>
+
+                            <tr>
+                                <td colspan="8" class="bg-dark" style="height:5px" />
+                            </tr>
+
+                            <tr>
+                                <td class="font-weight-bold" colspan="8">
+                                    Observations : ملاحظات
+                                </td>
+                            </tr>
+                            <tr style="height:50px">
+                                <td style="vertical-align:text-top;" colspan="8">
+                                    <span t-esc="o.note" />
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </t>
+            </div>
+        </t>
+    </template>
+</odoo>

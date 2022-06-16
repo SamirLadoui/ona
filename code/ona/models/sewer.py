@@ -1,4 +1,3 @@
-from email.policy import default
 from odoo import api, Command, fields, models
 from odoo.exceptions import UserError
 
@@ -87,7 +86,7 @@ class Sewer(models.Model):
         ],
         required=True,
         default="road"
-        )
+    )
 
     cunette = fields.Boolean(
         string='Cunette',
