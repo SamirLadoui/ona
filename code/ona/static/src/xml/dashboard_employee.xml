@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="dashboard_employee_frame" xml:space="preserve">
+    <t t-name="dashboard_employee_template">
+        <div id="app"/>
+    </t>
+</templates>

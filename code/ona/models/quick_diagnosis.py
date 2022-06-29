@@ -26,9 +26,9 @@ class QuickDiagnosis(models.Model):
         string='Responsible'
     )
 
-    date = fields.Datetime(
+    date = fields.Date(
         string='Date',
-        default=fields.Datetime.now,
+        default=fields.Date.today,
         readonly=True
     )
 

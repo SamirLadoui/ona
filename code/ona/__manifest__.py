@@ -26,4 +26,13 @@
         'report/ona_drainage_report.xml',
         'report/ona_quick_diagnosis_report.xml',
     ],
+    
+    'assets': {
+        'web.assets_qweb': [
+            'ona/static/src/xml/dashboard_employee.xml',
+        ],
+        'web.assets_backend': [
+            'ona/static/src/js/dashboard_employee/lib/app.bundle.js',
+        ]
+    },
 }

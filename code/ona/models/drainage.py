@@ -9,7 +9,7 @@ class DrainageLine(models.Model):
         compute='_compute_name',
     )
     
-    date = fields.Datetime(
+    date = fields.Date(
         related='drainage_id.date'
     )
     
@@ -104,9 +104,9 @@ class Drainage(models.Model):
         index=True
     )
     
-    date = fields.Datetime(
+    date = fields.Date(
         string='Date',
-        default=fields.Datetime.now,
+        default=fields.Date.today,
         readonly=True
     )
     

@@ -22,8 +22,7 @@ class Trunk(models.Model):
         string='Sewer'
     )
 
-    date = fields.Datetime(
-        string='field_name',
+    date = fields.Date(
         related='quick_diagnosis_id.date'
     )
 
